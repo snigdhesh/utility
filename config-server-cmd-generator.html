@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Document</title>
+        <link rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+        <style>
+            div{
+                margin-top: 0.1%;
+                margin-bottom: 0.1%;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="jumbotron">
+            <h1>Config server update query generator</h1>
+        </div>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <form action="" class="form" onsubmit="generateCommand()">
+                        <label for="">Config server name: </label>
+                        <input class="form-control" type="text" name="" id="csn"
+                            required><br>
+
+                        <label for="">Bitbucket SSH URL: </label>
+                        <input class="form-control" type="text" name=""
+                            id="ssh" required><br>
+
+                        <div> <label for="">Private key: *Make sure key doesn't
+                                container any invalid characters like '\n' for
+                                next lines.</label>
+                            <textarea class="form-control" name="" id="pk"
+                                cols="100" rows="3" required></textarea>
+                        </div>
+
+                        <br>
+                        <div> <button class="btn btn-primary" type="submit">preview</button>
+                            <button class="btn btn-primary" type="reset"
+                                onclick="hide()">clear</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-lg-6 invisible" id="preview">
+
+                    <code>cf update-service <span id="configServerName">Config
+                            server name</span> -c "{
+                        \"git\": {
+                        \"uri\": \"<span id="sshurl"></span>\",
+                        \"privateKey\": \"<span id="privatekey"></span>\"
+                        },
+                        "encrypt": {
+                        \"key": \"<span id="encryptkey"></span>\"
+                        },
+                        \"count\": 1
+                        }"</code>
+                </div>
+                <div class="col-lg-12 card">
+                    <div class="card-body">
+                        <h5>Generate a private key</h5>
+                        <pre>openssl genrsa -out privatekey.pem 2048</pre>
+
+                        <h5>Note:</h5> Can add json, directly in case of
+                        updating
+                        config server via PCF UI.
+                        <br>
+                        <br>
+                        <br>
+                        <h6>Sample format:</h6>
+                        <pre>
+                        {
+                            "git": {
+                              "uri": "ssh://git@bitbucket.example.com:1111/project-name/config-repo-name.git",
+                              "privateKey": "-----BEGIN RSA PRIVATE KEY-----abcdef-----END RSA PRIVATE KEY-----"
+                            },
+                            "encrypt": {
+                              "key": "-----BEGIN RSA PRIVATE KEY-----abcdef-----END RSA PRIVATE KEY-----"
+                            },
+                            "count": 1
+                          }
+                        </pre>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <script>
+            function hide(){
+                document.getElementById("preview").className="col-lg-6 invisible"
+            }
+
+        function generateCommand(){            
+            console.log("command genrated");
+            console.log(document.getElementById("preview"));
+            document.getElementById("configServerName").innerHTML=document.getElementById("csn").value;
+            document.getElementById("sshurl").innerHTML=document.getElementById("ssh").value;
+            document.getElementById("privatekey").innerHTML=document.getElementById("pk").value;
+            document.getElementById("encryptkey").innerHTML=document.getElementById("pk").value;
+            //document.getElementById("preview").style.display="block";
+            document.getElementById("preview").className="col-lg-12 visible";
+            
+            event.preventDefault();
+        }
+    </script>
+    </body>
+</html>
